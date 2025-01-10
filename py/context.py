@@ -79,7 +79,7 @@ def load_role_config(role):
 
     enhance_roles_with_custom_function(roles)
 
-    postfixes = ["", ".complete", ".edit", ".chat", ".image"]
+    postfixes = ["", ".complete", ".edit", ".chat"]
     if not any([f"{role}{postfix}" in roles for postfix in postfixes]):
         raise Exception(f"Role `{role}` not found")
 
@@ -91,7 +91,6 @@ def load_role_config(role):
         'role_complete': parse_role_section(roles.get(f"{role}.complete", {})),
         'role_edit': parse_role_section(roles.get(f"{role}.edit", {})),
         'role_chat': parse_role_section(roles.get(f"{role}.chat", {})),
-        'role_image': parse_role_section(roles.get(f"{role}.image", {})),
     }
 
 def parse_role_names(prompt):

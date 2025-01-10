@@ -110,16 +110,6 @@ def render_text_chunks(chunks):
     if not full_text.strip():
         raise KnownError('Empty response received. Tip: You can try modifying the prompt and retry.')
 
-def encode_image(image_path):
-    """Encodes an image file to a base64 string."""
-    with open(image_path, "rb") as image_file:
-        return base64.b64encode(image_file.read()).decode('utf-8')
-
-
-def is_image_path(path):
-    ext = path.strip().split('.')[-1]
-    return ext in ['jpg', 'jpeg', 'png', 'gif']
-
 def parse_include_paths(path):
     if not path:
         return []
@@ -134,11 +124,6 @@ def parse_include_paths(path):
         expanded_paths = sorted(glob.glob(path, recursive=True))
 
     return [path for path in expanded_paths if not os.path.isdir(path)]
-
-def make_image_message(path):
-    ext = path.split('.')[-1]
-    base64_image = encode_image(path)
-    return { 'type': 'image_url', 'image_url': { 'url': f"data:image/{ext.replace('.', '')};base64,{base64_image}" } }
 
 def make_text_file_message(path):
     try:
@@ -177,7 +162,7 @@ def parse_chat_messages(chat_content):
                     case 'include':
                         paths = parse_include_paths(line)
                         for path in paths:
-                            content = make_image_message(path) if is_image_path(path) else make_text_file_message(path)
+                            content = make_text_file_message(path)
                             messages[-1]['content'].append(content)
 
     return messages
@@ -345,8 +330,3 @@ def read_role_files():
     roles = configparser.ConfigParser()
     roles.read([default_roles_config_path, roles_config_path])
     return roles
-
-def save_b64_to_file(path, b64_data):
-    f = open(path, "wb")
-    f.write(base64.b64decode(b64_data))
-    f.close()

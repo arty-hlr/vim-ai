@@ -13,8 +13,6 @@ To get an idea what is possible to do with AI commands see the [prompts](https:/
 - Edit selected text in-place with AI
 - Interactive conversation with ChatGPT
 - Custom roles
-- Vision capabilities (image to text)
-- Generate images
 - Integrates with any OpenAI-compatible API
 
 ## How it works
@@ -94,7 +92,6 @@ To use an AI command, type the command followed by an instruction prompt. You ca
 :AI       complete text
 :AIEdit   edit text
 :AIChat   continue or open new chat
-:AIImage  generate image
 
 ============== Utilities ==============
 
@@ -169,16 +166,6 @@ In the documentation below,  `<selection>` denotes a visual selection or any oth
 
 `<selection>? :AIEdit /{role} {instruction}?` - use role to edit
 
-### `:AIImage`
-
-`:AIImage {prompt}` - generate image with prompt
-
-`<selection> :AIImage` - generate image with seleciton
-
-`<selection>? :AI /{role} {instruction}?` - use role to generate
-
-[Pre-defined](./roles-default.ini) image roles: `/hd`, `/natural`
-
 ### `:AIChat`
 
 `:AIChat` - continue or start a new conversation.
@@ -224,18 +211,6 @@ Generate documentation for the following files
 
 Each file's contents will be added to an additional user message with `==> {path} <==` header, relative paths are resolved to the current working directory.
 
-
-To use image vision capabilities (image to text) include an image file:
-
-```
->>> user
-
-What object is on the image?
-
->>> include
-
-~/myimage.jpg
-```
 
 Supported chat sections are **`>>> system`**, **`>>> user`**, **`>>> include`** and **`<<< assistant`**
 
@@ -408,30 +383,6 @@ let g:vim_ai_chat = {
 \    "code_syntax_enabled": 1,
 \    "force_new_chat": 0,
 \    "paste_mode": 1,
-\  },
-\}
-
-" :AIImage
-" - prompt: optional prepended prompt
-" - options: openai config (https://platform.openai.com/docs/api-reference/images/create)
-" - options.request_timeout: request timeout in seconds
-" - options.enable_auth: enable authorization using openai key
-" - options.token_file_path: override global token configuration
-" - options.download_dir: path to image download directory, `cwd` if not defined
-let g:vim_ai_image_default = {
-\  "prompt": "",
-\  "options": {
-\    "model": "dall-e-3",
-\    "endpoint_url": "https://api.openai.com/v1/images/generations",
-\    "quality": "standard",
-\    "size": "1024x1024",
-\    "style": "vivid",
-\    "request_timeout": 20,
-\    "enable_auth": 1,
-\    "token_file_path": "",
-\  },
-\  "ui": {
-\    "download_dir": "",
 \  },
 \}
 

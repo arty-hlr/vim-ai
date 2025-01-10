@@ -253,66 +253,6 @@ def test_parse_include_glob_files_message():
         },
     ] == actual_messages
 
-def test_parse_include_image_message():
-    chat_content = strip_text(f"""
-    >>> user
-
-    what is on the image?
-
-    >>> include
-
-    {curr_dir}/**/*.jpg
-    """)
-    actual_messages = parse_chat_messages(chat_content)
-    assert [
-        {
-            'role': 'user',
-            'content': [
-                {
-                    'type': 'text',
-                    'text': 'what is on the image?',
-                },
-                {
-                    'type': 'image_url',
-                    'image_url': {
-                        'url': 'data:image/jpg;base64,aW1hZ2UgZGF0YQo='
-                    },
-                },
-            ],
-        },
-    ] == actual_messages
-
-def test_parse_include_image_with_files_message():
-    chat_content = strip_text(f"""
-    >>> include
-
-    {curr_dir}/resources/test1.include.txt
-    {curr_dir}/resources/image_file.jpg
-    {curr_dir}/resources/test2.include.txt
-    """)
-    actual_messages = parse_chat_messages(chat_content)
-    assert [
-        {
-            'role': 'user',
-            'content': [
-                {
-                    'type': 'text',
-                    'text': f'==> {curr_dir}/resources/test1.include.txt <==\nhello world',
-                },
-                {
-                    'type': 'image_url',
-                    'image_url': {
-                        'url': 'data:image/jpg;base64,aW1hZ2UgZGF0YQo='
-                    },
-                },
-                {
-                    'type': 'text',
-                    'text': f'==> {curr_dir}/resources/test2.include.txt <==\nvim is awesome',
-                },
-            ],
-        },
-    ] == actual_messages
-
 def test_parse_include_unsupported_binary_file():
     chat_content = strip_text(f"""
     >>> include
