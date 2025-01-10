@@ -156,38 +156,29 @@ def parse_chat_messages(chat_content):
     for line in lines:
         match line:
             case '>>> system':
-                messages.append({'role': 'system', 'content': [{ 'type': 'text', 'text': '' }]})
+                messages.append({'role': 'system', 'content': ''})
                 current_type = 'system'
             case '<<< assistant':
-                messages.append({'role': 'assistant', 'content': [{ 'type': 'text', 'text': '' }]})
+                messages.append({'role': 'assistant', 'content': ''})
                 current_type = 'assistant'
             case '>>> user':
-                if messages and messages[-1]['role'] == 'user':
-                    messages[-1]['content'].append({ 'type': 'text', 'text': '' })
-                else:
-                    messages.append({'role': 'user', 'content': [{ 'type': 'text', 'text': '' }]})
+                messages.append({'role': 'user', 'content': ''})
                 current_type = 'user'
             case '>>> include':
                 if not messages or messages[-1]['role'] != 'user':
-                    messages.append({'role': 'user', 'content': []})
+                    messages.append({'role': 'user', 'content': ''})
                 current_type = 'include'
             case _:
                 if not messages:
                     continue
                 match current_type:
                     case 'assistant' | 'system' | 'user':
-                        messages[-1]['content'][-1]['text'] += '\n' + line
+                        messages[-1]['content'] += '\n' + line
                     case 'include':
                         paths = parse_include_paths(line)
                         for path in paths:
                             content = make_image_message(path) if is_image_path(path) else make_text_file_message(path)
                             messages[-1]['content'].append(content)
-
-    for message in messages:
-        # strip newlines from the text content as it causes empty responses
-        for content in message['content']:
-            if content['type'] == 'text':
-                content['text'] = content['text'].strip()
 
     return messages
 
