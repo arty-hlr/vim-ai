@@ -129,7 +129,7 @@ def make_text_file_message(path):
     try:
         with open(path, 'r') as file:
             file_content = file.read().strip()
-            return { 'type': 'text', 'text': f'==> {path} <==\n' + file_content.strip() }
+            return file_content.strip()
     except UnicodeDecodeError:
         return { 'type': 'text', 'text': f'==> {path} <==\nBinary file, cannot display' }
 
@@ -150,8 +150,6 @@ def parse_chat_messages(chat_content):
                 messages.append({'role': 'user', 'content': ''})
                 current_type = 'user'
             case '>>> include':
-                if not messages or messages[-1]['role'] != 'user':
-                    messages.append({'role': 'user', 'content': ''})
                 current_type = 'include'
             case _:
                 if not messages:
@@ -163,7 +161,7 @@ def parse_chat_messages(chat_content):
                         paths = parse_include_paths(line)
                         for path in paths:
                             content = make_text_file_message(path)
-                            messages[-1]['content'].append(content)
+                            messages.append({'role': 'user', 'content': content})
 
     return messages
 
